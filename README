@@ -1,0 +1,4 @@
+# Jenkins-slave-nodejs
+
+### Environment variables
+JENKINS_MASTER_PUBLIC_KEY

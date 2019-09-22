@@ -1,15 +1,16 @@
-FROM jenkins/ssh-slave
+FROM alpine:latest
 
-ENV NODE_VERSION 10
+ENTRYPOINT [ "/entrypoint.sh" ]
+EXPOSE 22
+COPY rootfs /
 
-RUN apt-get update && apt-get install -y -q --no-install-recommends \
-        apt-transport-https \
-        build-essential \
-        ca-certificates \
-        curl \
-        git \
-        libssl-dev \
-        wget
+RUN apk update
+RUN apk upgrade
 
-RUN wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.34.0/install.sh | bash
-RUN /bin/bash -c "source ~/.nvm/nvm.sh && nvm install $NODE_VERSION && nvm use --delete-prefix $NODE_VERSION"
+RUN apk add openjdk8
+RUN apk add nodejs=~10
+
+RUN apk add --no-cache openssh
+RUN ssh-keygen -A
+RUN addgroup -S jenkins && adduser -S jenkins -G jenkins -s /bin/sh
+RUN echo "jenkins:jenkins" | chpasswd
